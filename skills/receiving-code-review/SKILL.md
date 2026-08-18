@@ -72,6 +72,13 @@ BEFORE implementing:
   3. Check: Reason for current implementation?
   4. Check: Works on all platforms/versions?
   5. Check: Does reviewer understand full context?
+  6. Check: Does my fix address the finding's actual trigger — or just add
+     equivalent mitigation somewhere else? Re-read the flagged line/rule
+     after fixing; a static-analysis rule often keys on a specific
+     call site or pattern, not on the data flow. Hardening the mechanism
+     in a different function/file can be correct defense-in-depth while
+     still leaving the flagged line itself untouched — don't assume the
+     finding clears until you've re-checked against the actual rule.
 
 IF suggestion seems wrong:
   Push back with technical reasoning
@@ -172,6 +179,7 @@ State the correction factually and move on.
 | Avoiding pushback | Technical correctness > comfort |
 | Partial implementation | Clarify all items first |
 | Can't verify, proceed anyway | State limitation, ask for direction |
+| Assuming a relocated fix clears the finding | Re-check the flagged line/rule after fixing |
 
 ## Real Examples
 

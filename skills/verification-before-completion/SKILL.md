@@ -45,6 +45,7 @@ Skip any step = lying, not verifying
 | Linter clean | Linter output: 0 errors | Partial check, extrapolation |
 | Build succeeds | Build command: exit 0 | Linter passing, logs look good |
 | Bug fixed | Test original symptom: passes | Code changed, assumed fixed |
+| Same defect class elsewhere | Grepped sibling call sites/handlers sharing the pattern just fixed | Fixing only the reported instance |
 | Regression test works | Red-green cycle verified | Test passes once |
 | Agent completed | VCS diff shows changes | Agent reports "success" |
 | Requirements met | Line-by-line checklist | Tests passing |
@@ -72,6 +73,7 @@ Skip any step = lying, not verifying
 | "I'm tired" | Exhaustion ≠ excuse |
 | "Partial check is enough" | Partial proves nothing |
 | "Different words so rule doesn't apply" | Spirit over letter |
+| "That's a different function, not my bug" | Same pattern = same bug until you've checked |
 
 ## Key Patterns
 
@@ -104,6 +106,17 @@ Skip any step = lying, not verifying
 ✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
 ❌ Trust agent report
 ```
+
+**Same-class defect scan** (shared-state, exception-handling, locking, transaction bugs):
+```
+✅ Fix flagged instance → grep file/module for other sites sharing the same
+   connection/lock/pattern → check each → note findings → THEN claim "fixed"
+❌ Fix the one flagged case, claim "bug fixed"
+```
+A fix that proves a pattern is broken once (e.g. "this exception handler doesn't
+roll back a shared connection") makes every sibling site using that same pattern
+a suspect, not just the one that got a bug report. Skipping the scan means the
+next reviewer — human or automated — finds the sibling instance instead of you.
 
 ## Why This Matters
 
